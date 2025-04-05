@@ -15,6 +15,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+else
+{
+    // Add Swagger for production too
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
 
 app.UseHttpsRedirection();
 
