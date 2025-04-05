@@ -7,7 +7,7 @@ on:
 
 env:
   AZURE_WEBAPP_NAME: User-App20250405225406
-  AZURE_WEBAPP_PACKAGE_PATH: User-App/publish
+  AZURE_WEBAPP_PACKAGE_PATH: publish
   CONFIGURATION: Release
   DOTNET_CORE_VERSION: 8.0.x
   WORKING_DIRECTORY: User-App
@@ -16,14 +16,15 @@ jobs:
   build:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
 
-      - name: Restore
+      - name: Restore dependencies
         run: dotnet restore "${{ env.WORKING_DIRECTORY }}"
 
       - name: Build
@@ -33,29 +34,27 @@ jobs:
         run: dotnet test "${{ env.WORKING_DIRECTORY }}" --no-build
 
       - name: Publish
-        run: dotnet publish "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-build --output "${{ env.AZURE_WEBAPP_PACKAGE_PATH }}"
+        run: dotnet publish "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-build --output ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
 
-      - name: Upload artifact for deployment
+      - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: published-app
+          name: app
           path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
 
   deploy:
     runs-on: windows-latest
     needs: build
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Download artifact
+      - name: Download artifacts
         uses: actions/download-artifact@v4
         with:
-          name: published-app
-          path: publish
+          name: app
+          path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
 
       - name: Deploy to Azure WebApp
         uses: azure/webapps-deploy@v2
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: publish
+          package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
