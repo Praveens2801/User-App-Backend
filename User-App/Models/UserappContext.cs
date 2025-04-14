@@ -33,7 +33,7 @@ public partial class UserappContext : DbContext
 
             entity.HasIndex(e => e.OrganizationName, "UQ__OR_Organ__F50959E49E9AF17B").IsUnique();
 
-            entity.Property(e => e.CreatedOn).HasDefaultValueSql("(getdate())");
+            entity.Property(e => e.CreatedOn).HasMaxLength(50);
             entity.Property(e => e.Email).HasMaxLength(250);
             entity.Property(e => e.OrganizationName).HasMaxLength(100);
         });
@@ -46,16 +46,11 @@ public partial class UserappContext : DbContext
 
             entity.HasIndex(e => e.UserName, "UQ__OR_Users__C9F2845631CB2040").IsUnique();
 
-            entity.Property(e => e.CreatedOn).HasDefaultValueSql("(getdate())");
+            entity.Property(e => e.CreatedOn).HasMaxLength(50);
             entity.Property(e => e.Email).HasMaxLength(250);
             entity.Property(e => e.FullName).HasMaxLength(150);
             entity.Property(e => e.PasswordHash).HasMaxLength(255);
             entity.Property(e => e.UserName).HasMaxLength(100);
-
-            entity.HasOne(d => d.Organization).WithMany(p => p.OrUsers)
-                .HasForeignKey(d => d.OrganizationId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_OR_Users_Organization");
         });
 
         OnModelCreatingPartial(modelBuilder);

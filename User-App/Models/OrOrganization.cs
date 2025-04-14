@@ -11,7 +11,5 @@ public partial class OrOrganization
 
     public string? Email { get; set; }
 
-    public DateOnly? CreatedOn { get; set; }
-
-    public virtual ICollection<OrUser> OrUsers { get; set; } = new List<OrUser>();
+    public string? CreatedOn { get; set; }
 }

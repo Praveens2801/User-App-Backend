@@ -17,7 +17,5 @@ public partial class OrUser
 
     public string? Email { get; set; }
 
-    public DateOnly? CreatedOn { get; set; }
-
-    public virtual OrOrganization Organization { get; set; } = null!;
+    public string? CreatedOn { get; set; }
 }

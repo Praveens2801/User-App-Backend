@@ -40,7 +40,6 @@ public class UserController : ControllerBase
             CreatedOn = userData.CreatedOn,
             UserName = userData.UserName,
             PasswordHash = User_App.Helpers.PasswordHasher.Hash(userData.PasswordHash),
-            Organization = userData.Organization,
             UserId = userData.UserId,
         };
         userAppContext.OrUsers.Add(newUser);
